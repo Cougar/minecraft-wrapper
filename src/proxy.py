@@ -137,6 +137,9 @@ class Proxy:
 		if uuid in self.skinTextures:
 			return self.skinTextures[uuid]
 		skinBlob = json.loads(self.skins[uuid].decode("base64"))
+		if not "SKIN" in skinBlob["textures"]:
+			skinBlob["textures"]["SKIN"] = {}
+			skinBlob["textures"]["SKIN"]["url"] = "http://hydra-media.cursecdn.com/minecraft.gamepedia.com/f/f2/Alex_skin.png"
 		r = requests.get(skinBlob["textures"]["SKIN"]["url"])
 		self.skinTextures[uuid] = r.content.encode("base64")
 		return self.skinTextures[uuid]
