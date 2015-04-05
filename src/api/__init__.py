@@ -141,4 +141,4 @@ class API:
 		if world == False:
 			return storage.Storage(name, False, root=".wrapper-data/plugins/%s" % self.id)
 		else:
-			return storage.Storage(name, True, root="%s/plugins/%s" % (self.minecraft.getWorldName(), self.id))
+			return storage.Storage(name, True, root="%s/%s/plugins/%s" % (self.wrapper.config["General"]["server-directory"], self.minecraft.getWorldName(), self.id))

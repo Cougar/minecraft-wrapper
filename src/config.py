@@ -4,6 +4,7 @@ import traceback, ConfigParser, ast, time, os, sys
 DEFAULT_CONFIG = """[General]
 server-name = Minecraft Server
 command = java -jar minecraft_server.1.8.jar nogui
+server-directory = .
 auto-restart = True
 auto-update-wrapper = False
 auto-update-dev-build = False

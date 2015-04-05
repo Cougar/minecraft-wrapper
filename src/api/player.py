@@ -93,7 +93,7 @@ class Player:
 		self.client.send(0x3f, "string|bytearray", ("MC|RPack", url))
 	def isOp(self):
 		""" Returns whether or not the player is currently a server operator.  """
-		operators = json.loads(open("ops.json", "r").read())
+		operators = json.loads(open("%s/ops.json" % self.wrapper.config["General"]["server-directory"], "r").read())
 		for i in operators:
 			if i["uuid"] == self.uuid or i["name"] == self.username:
 				return True

@@ -34,8 +34,8 @@ class Proxy:
 		except:
 			self.log.error("Proxy could not poll the Minecraft server - are you 100% sure that the ports are configured properly? Reason:")
 			self.log.getTraceback()
-		if os.path.exists("server-icon.png"):
-			f = open("server-icon.png", "r")
+		if os.path.exists("%s/server-icon.png" % self.wrapper.config["General"]["server-directory"]):
+			f = open("%s/server-icon.png" % self.wrapper.config["General"]["server-directory"], "r")
 			self.serverIcon = "data:image/png;base64," + f.read().encode("base64")
 			f.close()
 		while not self.socket:
@@ -408,16 +408,16 @@ class Client: # handle client/game connection
 					if self.config["Proxy"]["online-mode"]:
 						# Check player files, and rename them accordingly to offline-mode UUID
 						worldName = self.wrapper.server.worldName
-						if not os.path.exists("%s/playerdata/%s.dat" % (worldName, str(self.serverUUID))):
-							if os.path.exists("%s/playerdata/%s.dat" % (worldName, str(self.uuid))):
+						if not os.path.exists("%s/%s/playerdata/%s.dat" % (self.wrapper.config["General"]["server-directory"], worldName, str(self.serverUUID))):
+							if os.path.exists("%s/%s/playerdata/%s.dat" % (self.wrapper.config["General"]["server-directory"], worldName, str(self.uuid))):
 								self.log.info("Migrating %s's playerdata file to proxy mode" % self.username)
-								shutil.move("%s/playerdata/%s.dat" % (worldName, str(self.uuid)), "%s/playerdata/%s.dat" % (worldName, str(self.serverUUID)))
-								with open("%s/.wrapper-proxy-playerdata-migrate" % worldName, "a") as f:
+								shutil.move("%s/%s/playerdata/%s.dat" % (self.wrapper.config["General"]["server-directory"],worldName, str(self.uuid)), "%s/%s/playerdata/%s.dat" % (self.wrapper.config["General"]["server-directory"], worldName, str(self.serverUUID)))
+								with open("%s/%s/.wrapper-proxy-playerdata-migrate" % (self.wrapper.config["General"]["server-directory"], worldName), "a") as f:
 									f.write("%s %s\n" % (str(self.uuid), str(self.serverUUID)))
 						# Change whitelist entries to offline mode versions
-						if os.path.exists("whitelist.json"):
+						if os.path.exists("%s/whitelist.json" % self.wrapper.config["General"]["server-directory"]):
 							data = None
-							with open("whitelist.json", "r") as f:
+							with open("%s/whitelist.json" % self.wrapper.config["General"]["server-directory"], "r") as f:
 								try: data = json.loads(f.read())
 								except: pass
 							if data:
@@ -432,10 +432,10 @@ class Client: # handle client/game connection
 								if a == False and b == True:
 									self.log.info("Migrating %s's whitelist entry to proxy mode" % self.username)
 									data.append({"uuid": str(self.serverUUID), "name": self.username})
-									with open("whitelist.json", "w") as f:
+									with open("%s/whitelist.json" % self.wrapper.config["General"]["server-directory"], "w") as f:
 										f.write(json.dumps(data))
 									self.wrapper.server.console("whitelist reload")
-									with open("%s/.wrapper-proxy-whitelist-migrate" % worldName, "a") as f:
+									with open("%s/%s/.wrapper-proxy-whitelist-migrate" % (self.wrapper.config["General"]["server-directory"], worldName), "a") as f:
 										f.write("%s %s\n" % (str(self.uuid), str(self.serverUUID)))
 					
 				self.serverUUID = self.UUIDFromName("OfflinePlayer:" + self.username)

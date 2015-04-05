@@ -94,7 +94,7 @@ class Minecraft:
 		""" Return an NBT object of the world's level.dat. """
 		if not worldName: worldName = self.wrapper.server.worldName
 		if not worldName: raise Exception("Server Uninitiated")
-		f = nbt.NBTFile("%s/level.dat" % worldName, "rb")
+		f = nbt.NBTFile("%s/%s/level.dat" % (self.wrapper.config["General"]["server-directory"], worldName), "rb")
 		return f["Data"]
 	def getSpawnPoint(self):
 		""" Returns the spawn point of the current world. """

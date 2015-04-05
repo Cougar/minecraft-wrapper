@@ -78,7 +78,7 @@ class Wrapper:
 				return str(username)
 			except: return False
 		else:
-			f = open("usercache.json", "r")
+			f = open("%s/usercache.json" % self.config["General"]["server-directory"], "r")
 			data = json.loads(f.read())
 			f.close()
 			for u in data:
@@ -97,7 +97,7 @@ class Wrapper:
 		else:
 			return self.UUIDFromName(username)
 		if not self.proxy:
-			f = open("usercache.json", "r")
+			f = open("%s/usercache.json" % self.config["General"]["server-directory"], "r")
 			data = json.loads(f.read())
 			f.close()
 			for u in data:

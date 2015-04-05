@@ -202,9 +202,9 @@ class Server:
 		return False
 	def reloadProperties(self):
 		# Read server.properties and extract some information out of it
-		if os.path.exists("server.properties"):
+		if os.path.exists("%s/server.properties" % self.config["General"]["server-directory"]):
 			s = StringIO.StringIO() # Stupid StringIO doesn't support __exit__()
-			config = open("server.properties", "r").read()
+			config = open("%s/server.properties" % self.config["General"]["server-directory"], "r").read()
 			s.write("[main]\n" + config)
 			s.seek(0)
 			try:
@@ -267,7 +267,7 @@ class Server:
 			self.changeState(1)
 			self.log.info("Starting server...")
 			self.reloadProperties()
-			self.proc = subprocess.Popen(self.args, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+			self.proc = subprocess.Popen(self.args, cwd=self.config["General"]["server-directory"], stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
 			self.players = {}	
 			while True:
 				time.sleep(0.1)
@@ -459,7 +459,7 @@ class Server:
 			if self.worldName == None: return True
 			self.pollSize = time.time()
 			size = 0
-			for i in os.walk(self.worldName):
+			for i in os.walk("%s/%s" % (self.config["General"]["server-directory"], self.worldName)):
 				for f in os.listdir(i[0]):
 					size += os.path.getsize(os.path.join(i[0], f))
 			self.worldSize = size

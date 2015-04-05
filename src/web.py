@@ -228,13 +228,13 @@ class Client:
 			return EOFError
 		if action == "read_server_props":
 			if not self.web.validateKey(get("key")): return EOFError
-			return open("server.properties", "r").read()
+			return open("%s/server.properties" % self.config["General"]["server-directory"], "r").read()
 		if action == "save_server_props":
 			if not self.web.validateKey(get("key")): return EOFError
 			props = get("props")
 			if not props: return False
 			if len(props) < 10: return False
-			with open("server.properties", "w") as f:
+			with open("%s/server.properties" % self.config["General"]["server-directory"], "w") as f:
 				f.write(props)
 			return "ok"
 		if action == "listdir":
