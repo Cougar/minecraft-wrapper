@@ -966,7 +966,7 @@ class Packet: # PACKET PARSING CODE
 		return payload.bytes
 	def send_position(self, payload):
 		x, y, z = payload
-		return self.send_long(((x & 0x3FFFFFF) << 38) | ((y & 0xFFF) << 26) | (z & 0x3FFFFFF))
+		return struct.pack(">Q", ((x & 0x3FFFFFF) << 38) | ((y & 0xFFF) << 26) | (z & 0x3FFFFFF))
 	def send_metadata(self, payload):
 		b = ""
 		for index in payload:
@@ -1044,12 +1044,15 @@ class Packet: # PACKET PARSING CODE
 	def read_bytearray_short(self):
 		return self.read_data(self.read_short())
 	def read_position(self):
-		position = self.read_long()
-		if position == -1: return None
-		if position & 0x3FFFFFF > 67100000: z = -(-position & 0x3FFFFFF)
-		else: z = position & 0x3FFFFFF
-		position = (position >> 38, (position >> 26) & 0xFFF, z)
-		return position
+		position = struct.unpack(">Q", self.read_data(8))[0]
+		if position == 0xFFFFFFFFFFFFFFFF: return None
+		x = int(position >> 38)
+		if (x & 0x2000000): x = (x & 0x1FFFFFF) - 0x2000000
+		y = int((position >> 26) & 0xFFF)
+		if (y & 0x800): y = (y & 0x4FF) - 0x800
+		z = int(position & 0x3FFFFFF)
+		if (z & 0x2000000): z = (z & 0x1FFFFFF) - 0x2000000
+		return (x, y, z)
 	def read_slot(self):
 		id = self.read_short()
 		if not id == -1:
