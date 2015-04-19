@@ -43,4 +43,3 @@ class Events:
 			#self.log.error("A serious runtime error occurred - if you notice any strange behaviour, please restart immediately")
 			#self.log.getTraceback()
 		return True
-	

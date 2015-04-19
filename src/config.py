@@ -10,12 +10,12 @@ auto-update-dev-build = False
 pre-1.7-mode = False
 timed-reboot = False
 timed-reboot-seconds = 86400
-timed-reboot-warning-minutes = 5 
-debug = False 
+timed-reboot-warning-minutes = 5
+debug = False
 shell-scripts = False
 
 [Backups]
-;; Automatic backups with automatic backup pruning. Interval is in seconds. ;; 
+;; Automatic backups with automatic backup pruning. Interval is in seconds. ;;
 enabled = False
 backup-folders = ['server.properties', 'world']
 backup-interval = 3600
@@ -94,14 +94,14 @@ class Config:
 			"timed-reboot-seconds": 86400,
 			"timed-reboot-warning-minutes": 5,
 			"shell-scripts": False
-		},		
-		"IRC":{ 
-			"irc-enabled": False, 
+		},
+		"IRC":{
+			"irc-enabled": False,
 			"nick": "MinecraftWrap",
-			"password": None, 
-			"server": "benbaptist.com", 
-			"port": 6667, 
-			"channels": ["#wrapper"], 
+			"password": None,
+			"server": "benbaptist.com",
+			"port": 6667,
+			"channels": ["#wrapper"],
 			"command-character": ".",
 			"obstruct-nicknames": False,
 			"autorun-irc-commands": ['COMMAND 1', 'COMMAND 2'],
@@ -110,7 +110,7 @@ class Config:
 			"control-irc-pass": "password",
 			"show-irc-join-part": True
 		},
-		"Backups":{ 
+		"Backups":{
 			"enabled": True,
 			"backups-keep": 10,
 			"backup-location": "backup-directory",
@@ -153,7 +153,7 @@ class Config:
 				self.log.debug("Adding section [%s] to configuration" % section)
 				self.config[section] = {}
 				self.exit = True
-		
+
 		for section in defaults:
 			for item in defaults[section]:
 				if item not in self.config[section]:

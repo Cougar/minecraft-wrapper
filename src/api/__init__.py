@@ -3,10 +3,10 @@ from api.player import Player
 from api.minecraft import Minecraft
 """ api.py contains the majority of code for the plugin API. """
 class API:
-	""" 
-	The API class contains methods for basic plugin functionality, such as handling events, registering commands, and more. 
-		
-	Most methods aren't related to gameplay, aside from commands and events, but for core stuff. See the Minecraft class (accessible at self.api.minecraft) for more gameplay-related methods. 
+	"""
+	The API class contains methods for basic plugin functionality, such as handling events, registering commands, and more.
+
+	Most methods aren't related to gameplay, aside from commands and events, but for core stuff. See the Minecraft class (accessible at self.api.minecraft) for more gameplay-related methods.
 	"""
 	statusEffects = {
 		"speed": 1,
@@ -68,7 +68,7 @@ class API:
 		else:
 			self.id = id
 	def registerCommand(self, command, callback, permission=None):
-		""" This registers a command that, when executed in Minecraft, will execute callback(player, args). 
+		""" This registers a command that, when executed in Minecraft, will execute callback(player, args).
 		permission is an optional attribute if you want your command to only be executable if the player has a specified permission node.
 		"""
 		commands = []
@@ -88,18 +88,18 @@ class API:
 		if self.id not in self.wrapper.events: self.wrapper.events[self.id] = {}
 		self.wrapper.events[self.id][eventType] = callback
 	def registerPermission(self, permission=None, value=False):
-		""" Used to set a default for a specific permission node. 
-		
-		Note: You do not need to run this function unless you want certain permission nodes to be granted by default. 
+		""" Used to set a default for a specific permission node.
+
+		Note: You do not need to run this function unless you want certain permission nodes to be granted by default.
 		i.e. `essentials.list` should be on by default, so players can run /list without having any permissions."""
 		if not self.internal:
 			self.wrapper.log.debug("[%s] Registered permission '%s' with default value: %s" % (self.name, permission, value))
 		if self.id not in self.wrapper.permission: self.wrapper.permission[self.id] = {}
-		self.wrapper.permission[self.id][permission] = value 
+		self.wrapper.permission[self.id][permission] = value
 	def registerHelp(self, groupName, summary, commands):
 		""" Used to create a help group for the /help command. groupName is the name you'll see in the list when you run /help, and summary is the text that you'll see next to it.
-		
-		The 'commands' argument is passed in the following format: 
+
+		The 'commands' argument is passed in the following format:
 			[
 				("/i <TileName>[:Data] [Count]", "Gives the player the requested item and puts it directly in their inventory.", "essentials.give"),
 				("/")
@@ -108,7 +108,7 @@ class API:
 		if not self.internal:
 			self.wrapper.log.debug("[%s] Registered help group '%s' with %d commands" % (self.name, groupName, len(commands)))
 		if self.id not in self.wrapper.help: self.wrapper.help[self.id] = {}
-		self.wrapper.help[self.id][groupName] = (summary, commands) 
+		self.wrapper.help[self.id][groupName] = (summary, commands)
 	def blockForEvent(self, eventType):
 		""" Blocks until the specified event is called. """
 		sock = []
@@ -126,8 +126,8 @@ class API:
 		""" Invokes the specific event. Payload is extra information relating to the event. Errors may occur if you don't specify the right payload information. """
 		self.wrapper.callEvent(event, payload)
 	def getPluginContext(self, id):
-		""" Returns the content of another plugin with the specified ID. 
-		
+		""" Returns the content of another plugin with the specified ID.
+
 		i.e. api.getPluginContext(\"com.benbaptist.plugins.essentials\")"""
 		if id in self.wrapper.plugins:
 			return self.wrapper.plugins[id]["main"]
@@ -135,8 +135,8 @@ class API:
 			raise Exception("Plugin %s does not exist!" % id)
 	def getStorage(self, name, world=False):
 		""" Return a storage object for storing configurations, player data, and any other data your plugin will need to remember across reboots.
-		
-		Setting world=True will store the data inside the current world folder, for world-specific data.  
+
+		Setting world=True will store the data inside the current world folder, for world-specific data.
 		"""
 		if world == False:
 			return storage.Storage(name, False, root=".wrapper-data/plugins/%s" % self.id)

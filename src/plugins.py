@@ -56,9 +56,9 @@ class Plugins:
 		self.plugins[id]["name"] = name
 		self.plugins[id]["version"] = version
 		self.plugins[id]["summary"] = summary
-		self.plugins[id]["description"] = description 
-		self.plugins[id]["author"] = author 
-		self.plugins[id]["website"] = website 
+		self.plugins[id]["description"] = description
+		self.plugins[id]["author"] = author
+		self.plugins[id]["website"] = website
 		self.plugins[id]["filename"] = i
 		self.wrapper.commands[id] = {}
 		self.wrapper.events[id] = {}

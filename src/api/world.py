@@ -23,7 +23,7 @@ class World:
 		self.server.console("setblock %d %d %d %s %d %s %s" % (x, y, z, tilename, damage, mode, json.dumps(data)))
 	def fill(self, position1, position2, tilename, damage=0, mode="destroy", data={}):
 		""" Fill a 3D cube with a certain block.
-		
+
 		Modes: destroy, hollow, keep, outline"""
 		if mode not in ("destroy", "hollow", "keep", "outline"):
 			raise Exception("Invalid mode: %s" % mode)

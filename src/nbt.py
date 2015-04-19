@@ -508,7 +508,7 @@ class NBTFile(TAG_Compound):
         if self.file:
             self.parse_file()
             if closefile:
-                # Note: GzipFile().close() does NOT close the fileobj, 
+                # Note: GzipFile().close() does NOT close the fileobj,
                 # So the caller is still responsible for closing that.
                 try:
                     self.file.close()

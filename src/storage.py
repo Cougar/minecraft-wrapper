@@ -3,13 +3,13 @@ class Storage:
 	def __init__(self, name, isWorld=None, root="wrapper-data/json"):
 		self.name = name
 		self.root = root
-		
+
 		self.data = {}
 		self.dataOld = {}
 		self.load()
 		self.abort = False
 		self.time = time.time()
-		
+
 		t = threading.Thread(target=self.periodicSave, args=())
 		t.daemon = True
 		t.start()
@@ -48,13 +48,13 @@ class Storage:
 			l += i + "/"
 			if not os.path.exists(l):
 				try: os.mkdir(l)
-				except: pass 
+				except: pass
 		if not os.path.exists("%s/%s.json" % (self.root, self.name)):
 			self.save()
 		with open("%s/%s.json" % (self.root, self.name), "r") as f:
 			try:
 				self.data = json.loads(f.read())
-			except: 
+			except:
 				print "Failed to load '%s/%s.json' - fresh" % (self.root, self.name)
 				return
 		self.dataOld = copy.deepcopy(self.data)

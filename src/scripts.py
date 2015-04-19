@@ -1,9 +1,9 @@
 import api, os, stat
-scripts = {"server-start.sh": """ # This script is called just before the server starts. 
+scripts = {"server-start.sh": """ # This script is called just before the server starts.
 # It's safe to make changes to the world file, server.properties, etc. since the server has not started yet.
 # Arguments passed to this script: None
 """,
-"server-stop.sh": """ # This script is called right after the server has stopped. 
+"server-stop.sh": """ # This script is called right after the server has stopped.
 # It's safe to make changes to the world file, server.properties, etc. since the server is completely shutdown.
 # Arguments passed to this script: None
 """,
@@ -18,13 +18,13 @@ class Scripts:
 	def __init__(self, wrapper):
 		self.api = api.API(wrapper, "Scripts", internal=True)
 		self.wrapper = wrapper
-		
+
 		# Register the events
 		self.api.registerEvent("server.start", self._startServer)
 		self.api.registerEvent("server.stopped", self._stopServer)
 		self.api.registerEvent("wrapper.backupBegin", self._backupBegin)
 		self.api.registerEvent("wrapper.backupEnd", self._backupEnd)
-		
+
 		self.createDefaultScripts()
 	def createDefaultScripts(self):
 		if not os.path.exists("wrapper-data"): os.mkdir("wrapper-data")
@@ -44,4 +44,3 @@ class Scripts:
 		os.system("wrapper-data/scripts/backup-begin.sh %s" % payload["file"])
 	def _backupEnd(self, payload):
 		os.system("wrapper-data/scripts/backup-finish.sh %s" % payload["file"])
-	

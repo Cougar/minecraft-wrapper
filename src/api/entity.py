@@ -4,7 +4,7 @@ ENTITIES = { # Unfinished list of entities
 	50: {"Name": "Creeper", "size": (0.6, 1.8)},
 	51: {"Name": "Skeleton", "size": (0.6, 1.8)},
 	52: {"Name": "Spider", "size": (1.4, 0.9)},
-	53: {"Name": "Giant Zombie", "size": (3.6, 10.8)}, 
+	53: {"Name": "Giant Zombie", "size": (3.6, 10.8)},
 	54: {"Name": "Zombie", "size": (0.6, 1.8)},
 	55: {"Name": "Slime", "size": (0.6, 0.6)},
 	56: {"Name": "Ghast", "size": (4, 4)},
@@ -19,7 +19,7 @@ class Entity:
 		self.look = look # Head Position
 		self.rodeBy = False
 		self.riding = False
-		
+
 		if type in ENTITIES: self.type = ENTITIES[type]
 		self.isObject = isObject # Boat/Minecart/other non-living Entities are objects
 	def __str__(self):
@@ -33,7 +33,7 @@ class Entity:
 		oldPosition[2] += z / 32.0
 		self.position = (oldPosition[0], oldPosition[1], oldPosition[2])
 		if self.rodeBy:
-			self.rodeBy.position = self.position 
+			self.rodeBy.position = self.position
 	def teleport(self, position):
 		""" Teleport the entity to a specific location. """
 		self.position = (position[0] / 32, position[1] / 32, position[2] / 32)

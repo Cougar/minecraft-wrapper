@@ -16,7 +16,7 @@ class IRC:
 		self.timeout = False
 		self.ready = False
 		self.msgQueue = []
-		
+
 		self.api = api.API(self.wrapper, "IRC", internal=True)
 		self.api.registerEvent("server.starting", self.onServerStarting)
 		self.api.registerEvent("server.started", self.onServerStarted)
@@ -52,7 +52,7 @@ class IRC:
 		self.socket = socket.socket()
 		self.socket.connect((self.address, self.port))
 		self.socket.setblocking(120)
-		
+
 		self.auth()
 	def auth(self):
 		if self.config["IRC"]["password"]:
@@ -139,7 +139,7 @@ class IRC:
 				self.parse()
 	def queue(self):
 		while self.socket:
-			if not self.ready: 
+			if not self.ready:
 				time.sleep(0.1)
 				continue
 			for i,message in enumerate(self.msgQueue):
@@ -152,12 +152,12 @@ class IRC:
 						self.send("PRIVMSG %s :%s" % (channel, message))
 				del self.msgQueue[i]
 			self.msgQueue = []
-			time.sleep(0.1)	
+			time.sleep(0.1)
 	def filterName(self, name):
 		if self.config["IRC"]["obstruct-nicknames"]:
 			return "_" + str(name)[1:]
 		else:
-			return name 
+			return name
 	def rawConsole(self, payload):
 		self.server.console(payload)
 	def console(self, channel, payload):
@@ -210,20 +210,20 @@ class IRC:
 		if self.args(1) == "QUIT":
 			nick = self.args(0)[1:self.args(0).find("!")]
 			message = " ".join(self.line.split(" ")[2:])[1:].strip("\n").strip("\r")
-			
+
 			self.wrapper.callEvent("irc.quit", {"nick": nick, "message": message, "channel": None})
 		if self.args(1) == "PRIVMSG":
 			channel = self.args(2)
 			nick = self.args(0)[1:self.args(0).find("!")]
 			message = " ".join(self.line.split(" ")[3:])[1:].strip("\n").strip("\r")
-			
+
 			def args(i):
 				try: return message.split(" ")[i]
 				except: return ""
 			def argsAfter(i):
 				try: return " ".join(message.split(" ")[i:])
 				except: return ""
-			
+
 			if channel[0] == "#":
 				if message.strip() == ".players":
 					users = ""
@@ -246,7 +246,7 @@ class IRC:
 					self.log.info("[PRIVATE] (%s) %s" % (self.config["IRC"]["nick"], string))
 					self.send("PRIVMSG %s :%s" % (nick, string))
 				if self.config["IRC"]["control-irc-pass"] == "password":
-					msg("Please change your password from 'password' in wrapper.properties. I will not allow you to use that password. It's an awful password. Please change it.")	
+					msg("Please change your password from 'password' in wrapper.properties. I will not allow you to use that password. It's an awful password. Please change it.")
 					return
 				if "password" in self.config["IRC"]["control-irc-pass"]:
 					msg("Please choose a password that doesn't contain the term 'password'.")

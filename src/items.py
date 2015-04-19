@@ -1,8 +1,8 @@
-# This was probably a dumb idea. 
+# This was probably a dumb idea.
 # I might use http://minecraft-ids.grahamedgecombe.com/items.json instead
 Blocks = {
 0: {"TileName": "air", "Items": [{"Name": "Air"}]},
-1: {"TileName": "stone", "Items": [ 
+1: {"TileName": "stone", "Items": [
 	{"Name": "Stone"},
 	{"Name": "Granite"},
 	{"Name": "Polished Granite"},
@@ -18,8 +18,8 @@ Blocks = {
 3: {"TileName": "grass", "Items": [{"Name": "Grass"}]},
 4: {"TileName": "cobblestone", "Items": [{"Name": "Cobblestone"}]},
 5: {"TileName": "planks", "Items": [
-	{"Name": "Oak Wood Plank"}, 
-	{"Name": "Spruce Wood Plank"}, 
+	{"Name": "Oak Wood Plank"},
+	{"Name": "Spruce Wood Plank"},
 	{"Name": "Birch Wood Plank"},
 	{"Name": "Jungle Wood Plank"},
 	{"Name": "Acacia Wood Plank"},
@@ -47,8 +47,8 @@ Blocks = {
 15: {"TileName": "gold_ore", "Items": [{"Name": "Gold Ore"}]},
 16: {"TileName": "coal_ore", "Items": [{"Name": "Coal Ore"}]},
 17: {"TileName": "log", "Items": [
-	{"Name": "Log"}, 
-	{"Name": "Spruce Wood"}, 
+	{"Name": "Log"},
+	{"Name": "Spruce Wood"},
 	{"Name": "Birch Wood"},
 	{"Name": "Jungle Wood"}
 ]},

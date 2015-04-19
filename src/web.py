@@ -20,7 +20,7 @@ class Web:
 #			self.data["password"] = md5.md5(self.config["Web"]["web-password"]).hexdigest()
 #			self.config["Web"]["web-password"] = None
 #			self.wrapper.configManager.save()
-		
+
 		self.api.registerEvent("server.consoleMessage", self.onServerConsole)
 		self.api.registerEvent("player.message", self.onPlayerMessage)
 		self.api.registerEvent("player.login", self.onPlayerJoin)
@@ -32,7 +32,7 @@ class Web:
 		self.loginAttempts = 0
 		self.lastAttempt = 0
 		self.disableLogins = 0
-		
+
 	#	t = threading.Thread(target=self.updateGraph, args=())
 #		t.daemon = True
 #		t.start()
@@ -152,10 +152,10 @@ class Client:
 		self.write("HTTP/1.0 %s\n" % status)
 		if len(location) < 1:
 			self.write("Content-Type: %s\n" % contentType)
-		
+
 		if len(location) > 0:
 			self.write("Location: %s\n" % location)
-		
+
 		self.write("\n")
 	def close(self):
 		try:
@@ -172,10 +172,10 @@ class Client:
 			self.write("<h1>300 Internal Server Error</h1>")
 			self.close()
 	def handleAction(self, request):
-		def args(i): 
+		def args(i):
 			try: return request.split("/")[1:][i]
 			except: return ""
-		def get(i): 
+		def get(i):
 			for a in args(1).split("?")[1].split("&"):
 				if a[0:a.find("=")]:
 					return urllib.unquote(a[a.find("=")+1:])
@@ -190,7 +190,7 @@ class Client:
 	def safePath(self, path):
 		os.getcwd()
 	def runAction(self, request):
-		def args(i): 
+		def args(i):
 			try: return request.split("/")[1:][i]
 			except: return ""
 		def get(i):
@@ -262,7 +262,7 @@ class Client:
 			if os.path.exists(file):
 				try: os.rename(file, rename)
 				except:
-					print traceback.format_exc() 
+					print traceback.format_exc()
 					return False
 				return True
 			return False
@@ -274,10 +274,10 @@ class Client:
 				try:
 					if os.path.isdir(file):
 						os.removedirs(file)
-					else: 
+					else:
 						os.remove(file)
 				except:
-					print traceback.format_exc()  
+					print traceback.format_exc()
 					return False
 				return True
 			return False
@@ -301,8 +301,8 @@ class Client:
 			for i in self.wrapper.server.players:
 				player = self.wrapper.server.players[i]
 				players.append({
-					"name": i, 
-					"loggedIn": player.loggedIn, 
+					"name": i,
+					"loggedIn": player.loggedIn,
 					"uuid": str(player.uuid),
 					"isOp": player.isOp()
 				})
@@ -344,7 +344,7 @@ class Client:
 			#totalPlaytime = {}
 #			totalPlayers = self.web.api.minecraft.getAllPlayers()
 #			for uu in totalPlayers:
-#				if not "logins" in totalPlayers[uu]: 
+#				if not "logins" in totalPlayers[uu]:
 #					continue
 #				playerName = self.web.wrapper.getUsername(uu)
 #				totalPlaytime[playerName] = [0, 0]
@@ -370,7 +370,7 @@ class Client:
 #				topPlayers.append((totalPlaytime[username][0], secondsToHuman(totalPlaytime[username][0]), totalPlaytime[username][1], username))
 #				if i == 9: break
 #			topPlayers.sort(); topPlayers.reverse()
-			return {"playerCount": [len(self.wrapper.server.players), self.wrapper.server.maxPlayers], 
+			return {"playerCount": [len(self.wrapper.server.players), self.wrapper.server.maxPlayers],
 				"players": players,
 				"plugins": plugins,
 				"server_state": self.wrapper.server.state,
@@ -464,7 +464,7 @@ class Client:
 		return "application/octet-stream"
 	def get(self, request):
 		#print "GET request: %s" % request
-		def args(i): 
+		def args(i):
 			try: return request.split("/")[1:][i]
 			except: return ""
 		if request == "/":
@@ -491,8 +491,8 @@ class Client:
 			self.close()
 			return False
 		try:
-			if file == "/admin": file = "admin.html" 
-			if file == "/login": file = "login.html" 
+			if file == "/admin": file = "admin.html"
+			if file == "/login": file = "login.html"
 			data = self.read(file)
 			self.headers(contentType=self.getContentType(file))
 			self.write(data)
@@ -513,13 +513,13 @@ class Client:
 				#self.log.debug("(WEB) Connection %s closed" % str(self.addr))
 				break
 			if len(self.buffer) < 1:
-				print "Web connection closed suddenly" 
+				print "Web connection closed suddenly"
 				return False
 			for line in self.buffer:
-				def args(i): 
+				def args(i):
 					try: return line.split(" ")[i]
 					except: return ""
-				def argsAfter(i): 
+				def argsAfter(i):
 					try: return " ".join(line.split(" ")[i:])
 					except: return ""
 				if args(0) == "GET":

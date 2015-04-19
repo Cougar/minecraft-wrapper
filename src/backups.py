@@ -8,7 +8,7 @@ class Backups:
 		self.config = wrapper.config
 		self.log = wrapper.log
 		self.api = api.API(wrapper, "Backups", internal=True)
-		
+
 		self.interval = 0
 		self.time = time.time()
 		self.backups = []
@@ -47,17 +47,17 @@ class Backups:
 			self.console("save-all")
 			self.console("save-off")
 			time.sleep(0.5)
-	
+
 			if not os.path.exists(str(self.config["Backups"]["backup-location"])):
 				os.mkdir(self.config["Backups"]["backup-location"])
-			
+
 			filename = "backup-%s.tar" % datetime.datetime.fromtimestamp(int(timestamp)).strftime("%Y-%m-%d_%H.%M.%S")
 			if self.config["Backups"]["backup-compression"]:
 				filename += ".gz"
 				arguments = ["tar", "czf", "%s/%s" % (self.config["Backups"]["backup-location"].replace(" ", "\\ "), filename)]
 			else:
 				arguments = ["tar", "cfpv", "%s/%s" % (self.config["Backups"]["backup-location"], filename)]
-			
+
 			# Check if tar is installed
 			which = "where" if platform.system() == "Windows" else "which"
 			if not subprocess.call([which, "tar"]) == 0:
@@ -66,27 +66,27 @@ class Backups:
 				self.log.error("If you are on a Linux-based system, please install it through your preferred package manager.")
 				self.log.error("If you are on Windows, you can find GNU/Tar from this link: http://goo.gl/SpJSVM")
 				return
-			
+
 			if not self.wrapper.callEvent("wrapper.backupBegin", {"file": filename}):
 				self.log.warn("A backup was scheduled, but was cancelled by a plugin!")
 				return
 			if self.config["Backups"]["backup-notification"]:
 				self.broadcast("&cBacking up... lag may occur!")
-			
+
 			for file in self.config["Backups"]["backup-folders"]:
 				if os.path.exists(file):
 					arguments.append(file)
 				else:
 					self.log.warn("Backup file '%s' does not exist - cancelling backup" % file)
 					self.wrapper.callEvent("wrapper.backupFailure", {"reasonCode": 3, "reasonText": "Backup file '%s' does not exist." % file})
-					return 
+					return
 			statusCode = os.system(" ".join(arguments))
 			self.console("save-on")
 			if self.config["Backups"]["backup-notification"]:
 				self.broadcast("&aBackup complete!")
 			self.wrapper.callEvent("wrapper.backupEnd", {"file": filename, "status": statusCode})
 			self.backups.append((timestamp, filename))
-			
+
 			if len(self.backups) > self.config["Backups"]["backups-keep"]:
 				self.log.info("Deleting old backups...")
 				while len(self.backups) > self.config["Backups"]["backups-keep"]:
@@ -101,7 +101,7 @@ class Backups:
 					del self.backups[0]
 			f = open(self.config["Backups"]["backup-location"] + "/backups.json", "w")
 			f.write(json.dumps(self.backups))
-			f.close()	
-			
+			f.close()
+
 			if not os.path.exists(self.config["Backups"]["backup-location"] + "/" + filename):
 				self.wrapper.callEvent("wrapper.backupFailure", {"reasonCode": 2, "reasonText": "Backup file didn't exist after the tar command executed - assuming failure."})

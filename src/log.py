@@ -15,7 +15,7 @@ class Log:
 			print traceback.format_exc()
 	def prefix(self, type="INFO", string=""):
 		for line in string.split("\n"):
-			self.write("%s [Wrapper.py/%s] %s" % (self.timestamp(), type, line)) 
+			self.write("%s [Wrapper.py/%s] %s" % (self.timestamp(), type, line))
 			print("%s [Wrapper.py/%s] %s" % (time.strftime("[%H:%M:%S]"), type, line))
 	def info(self, string):
 		self.prefix("INFO", string)
@@ -40,7 +40,7 @@ class PluginLog:
 		self.log.write(payload)
 	def prefix(self, type="INFO", string=""):
 		for line in string.split("\n"):
-			self.write("%s [%s/%s] %s" % (self.PluginName, self.timestamp(), type, line)) 
+			self.write("%s [%s/%s] %s" % (self.PluginName, self.timestamp(), type, line))
 			print("%s [%s/%s] %s" % (self.PluginName, time.strftime("[%H:%M:%S]"), type, line))
 	def info(self, string):
 		self.prefix("INFO", string)

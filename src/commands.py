@@ -3,7 +3,7 @@ class Commands:
 	def __init__(self, wrapper):
 		self.wrapper = wrapper
 		self.log = wrapper.log
-		
+
 		self.commands = {}
 	def __getitem__(self, index):
 		if not type(index) == str:
@@ -32,7 +32,7 @@ class Commands:
 			except: return ""
 		for pluginID in self.commands:
 			if pluginID == "Wrapper.py":
-				try: 
+				try:
 					self.commands[pluginID][command](payload["player"], payload["args"])
 				except: pass
 				continue
@@ -55,7 +55,7 @@ class Commands:
 					payload["player"].message({"text": "An internal error occurred on the server side while trying to execute this command. Apologies.", "color": "red"})
 					return False
 		if payload["command"] == "wrapper":
-			if not player.isOp(): return 
+			if not player.isOp(): return
 			buildString = self.wrapper.getBuildString()
 			if len(args(0)) > 0:
 				subcommand = args(0)
@@ -102,11 +102,11 @@ class Commands:
 						summary = None
 						description = ""
 					if summary == None:
-						summary = {"text": "No description is available for this plugin", "color": "gray", "italic": True, 
+						summary = {"text": "No description is available for this plugin", "color": "gray", "italic": True,
 							"hoverEvent": {"action": "show_text", "value": description}}
 					else:
 						summary = {"text": summary, "color": "white", "hoverEvent": {"action": "show_text", "value": description}}
-					
+
 					if version == None: version = "v?.?"
 					else: version = ".".join([str(_) for _ in version])
 					if plugin["good"]:
@@ -157,7 +157,7 @@ class Commands:
 					{"text": " page %d of %d ---" % (page + 1, pageCount)}
 				]})
 				for i,v in enumerate(items):
-					if not i / perPage == page: continue 
+					if not i / perPage == page: continue
 					player.message(v)
 				if pageCount > 1:
 					if page > 0:
@@ -215,7 +215,7 @@ class Commands:
 				totalPlaytime = {}
 				players = self.wrapper.api.minecraft.getAllPlayers()
 				for uu in players:
-					if not "logins" in players[uu]: 
+					if not "logins" in players[uu]:
 						continue
 					playerName = self.wrapper.getUsername(uu)
 					totalPlaytime[playerName] = [0, 0]
@@ -252,7 +252,7 @@ class Commands:
 						result = secondsToHuman(p[0])
 						player.message("&7%d. &e%s: &6%s" % (i+1, p[1], result))
 						if i == 9: break
-				return 
+				return
 		if payload["command"] in ("permissions", "perm", "perms", "super"):
 			if not "groups" in self.wrapper.permissions: self.wrapper.permissions["groups"] = {}
 			if not "users" in self.wrapper.permissions: self.wrapper.permissions["users"] = {}
@@ -280,7 +280,7 @@ class Commands:
 						node = args(3)
 						value = argsAfter(4)
 						if len(value) == 0: value = True
-						if value in ("True", "False"): value = ast.literal_eval(value) 
+						if value in ("True", "False"): value = ast.literal_eval(value)
 						if len(node) > 0:
 							self.wrapper.permissions["groups"][group]["permissions"][node] = value
 							player.message("&aAdded permission node '%s' to group '%s'!" % (node, group))
@@ -343,7 +343,7 @@ class Commands:
 						node = args(3)
 						value = argsAfter(4)
 						if len(value) == 0: value = True
-						if value in ("True", "False"): value = ast.literal_eval(value) 
+						if value in ("True", "False"): value = ast.literal_eval(value)
 						if len(node) > 0:
 							self.wrapper.permissions["users"][uuid]["permissions"][node] = value
 							player.message("&aAdded permission node '%s' to player '%s'!" % (node, username))

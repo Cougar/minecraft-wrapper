@@ -4,7 +4,7 @@ class Minecraft:
 	def __init__(self, wrapper):
 		self.wrapper = wrapper
 		self.log = wrapper.log
-		
+
 		self.blocks = items.Blocks
 	def isServerStarted(self):
 		""" Returns a boolean if the server is fully booted or not. """
@@ -44,7 +44,7 @@ class Minecraft:
 		""" Gives the specified status effect to the specified target. """
 		if type(effect) == int: effectConverted = str(effect)
 		else:
-			try: 
+			try:
 				effectConverted = int(effect)
 			except: # a non-number was passed, so we'll figure out what status effect it was in word form
 				if effect in API.statusEffects:
@@ -52,7 +52,7 @@ class Minecraft:
 				else:
 					raise Exception("Invalid status effect given!")
 		if int(effectConverted) > 24 or int(effectConverted) < 1:
-			raise Exception("Invalid status effect given!") 
+			raise Exception("Invalid status effect given!")
 		self.console("effect %s %s %d %d" % (player, effectConverted, duration, amplifier))
 	def summonEntity(self, entity, x=0, y=0, z=0, dataTag={}):
 		""" Summons an entity at the specified coordinates with the specified data tag. """
@@ -62,7 +62,7 @@ class Minecraft:
 		self.console("tellraw %s %s" % (destination, json.dumps(json_message)))
 	def broadcast(self, message="", irc=False):
 		""" Broadcasts the specified message to all clients connected. message can be a JSON chat object, or a string with formatting codes using the & as a prefix.
-		
+
 		Setting irc=True will also broadcast the specified message on IRC channels that Wrapper.py is connected to. Formatting might not work properly.
 		"""
 		if irc:
@@ -118,7 +118,7 @@ class Minecraft:
 		return self.wrapper.server
 	def getWorld(self):
 		""" Returns the world context. """
-		return self.getServer().world 
+		return self.getServer().world
 	def getWorldName(self):
 		""" Returns the world's name. """
 		return self.getServer().worldName

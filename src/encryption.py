@@ -140,4 +140,3 @@ class PBEWithMD5AndDES(object):
         for i in range(count):
             key = md5(key).digest()
         return key[:length]
-

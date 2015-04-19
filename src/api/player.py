@@ -10,7 +10,7 @@ class Player:
 		self.loggedIn = time.time()
 		self.abort = False
 		self.log = wrapper.log
-		
+
 		self.uuid = self.wrapper.getUUID(username)
 		self.client = None
 		if not self.wrapper.proxy == False:
@@ -27,7 +27,7 @@ class Player:
 				self.log.error("UUID for %s is set as None in Player object. Cannot be fixed. Proxy mode is off. Please report this issue (and this line) to http://github.com/benbaptist/minecraft-wrapper/issues " % (self.username))
 		if self.uuid == False:
 			self.log.error("UUID for %s is set to False. Proxy mode is %s. Please report this issue (and this line) to http://github.com/benbaptist/minecraft-wrapper/issues" % (self.username, str(self.wrapper.proxy)))
-		
+
 		self.data = storage.Storage(self.uuid, root="wrapper-data/players")
 		if not "firstLoggedIn" in self.data: self.data["firstLoggedIn"] = (time.time(), time.tzname)
 		if not "logins" in self.data:
@@ -49,8 +49,8 @@ class Player:
 		except:
 			pass
 	def execute(self, string):
-		""" Run a vanilla command as this player. Works best in proxy mode. If proxy mode is not enabled, it simply falls back to using the 1.8 'execute' command. 
-		
+		""" Run a vanilla command as this player. Works best in proxy mode. If proxy mode is not enabled, it simply falls back to using the 1.8 'execute' command.
+
 		To be clear, this does NOT work with any Wrapper.py commands. The command is sent straight to the vanilla server."""
 		try:
 			self.client.message("/%s" % string)
@@ -144,7 +144,7 @@ class Player:
 			self.permissions["users"] = {}
 		uuid = str(self.uuid)
 		if uuid in self.permissions["users"]:
-			for perm in self.permissions["users"][uuid]["permissions"]:	
+			for perm in self.permissions["users"][uuid]["permissions"]:
 				if node in fnmatch.filter([node], perm):
 					return self.permissions["users"][uuid]["permissions"][perm]
 		if uuid not in self.permissions["users"]: return False
@@ -171,7 +171,7 @@ class Player:
 			if uuid == self.uuid:
 				return self.permissions["users"][uuid]["groups"]
 		return [] # If the user is not in the permission database, return this
-	# Player Information 
+	# Player Information
 	def getFirstLogin(self):
 		""" Returns a tuple containing the timestamp of when the user first logged in for the first time, and the timezone (same as time.tzname). """
 		return self.data["firstLoggedIn"]

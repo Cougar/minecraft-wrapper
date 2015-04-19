@@ -1,5 +1,5 @@
 import socket, datetime, time, sys, threading, random, subprocess, os, json, signal, traceback, api, StringIO, ConfigParser, backups, sys, codecs, ctypes, platform, ast
-try: 
+try:
 	import resource
 	IMPORT_RESOURCE_SUCCESS = True
 except: IMPORT_RESOURCE_SUCCESS = False
@@ -13,7 +13,7 @@ class Server:
 		self.args = args
 		self.api = api.API(wrapper, "Server", internal=True)
 		self.backups = backups.Backups(wrapper)
-		
+
 		if "serverState" not in self.wrapper.storage:
 			self.wrapper.storage["serverState"] = True
 		self.players = {}
@@ -24,12 +24,12 @@ class Server:
 		self.rebootWarnings = 0
 		self.pollSize = 0
 		self.data = []
-		
+
 		if not self.wrapper.storage["serverState"]:
 			self.log.warn("NOTE: Server was in 'STOP' state last time Wrapper.py was running. To start the server, run /start.")
 			time.sleep(5)
-		
-		# Server Information 
+
+		# Server Information
 		self.worldName = None
 		self.worldSize = 0
 		self.maxPlayers = 20
@@ -38,9 +38,9 @@ class Server:
 		self.world = None
 		self.motd = None
 		self.onlineMode = True
-		
+
 		self.reloadProperties()
-		
+
 		self.api.registerEvent("irc.message", self.onChannelMessage)
 		self.api.registerEvent("irc.action", self.onChannelAction)
 		self.api.registerEvent("irc.join", self.onChannelJoin)
@@ -83,8 +83,8 @@ class Server:
 		self.changeState(0, reason)
 		self.proc.kill()
 	def freeze(self, reason="Server is now frozen. You may disconnect momentarily."):
-		""" Freeze the server with `kill -STOP`. Can be used to stop the server in an emergency without shutting it down, so it doesn't write corrupted data - e.g. if the disk is full, you can freeze the server, free up some disk space, and then unfreeze 
-		
+		""" Freeze the server with `kill -STOP`. Can be used to stop the server in an emergency without shutting it down, so it doesn't write corrupted data - e.g. if the disk is full, you can freeze the server, free up some disk space, and then unfreeze
+
 		'reason' argument is printed in the chat for all currently-connected players, unless you specify None. """
 		if reason:
 			self.log.info("Freezing server with reason: %s" % reason)
@@ -151,7 +151,7 @@ class Server:
 			else:
 				if url: clickEvent = {"action": "open_url", "value": current}
 				else: clickEvent = {}
-				extras.append({"text": current, "color": color, "obfuscated": obfuscated, 
+				extras.append({"text": current, "color": color, "obfuscated": obfuscated,
 					"underlined": underline, "bold": bold, "italic": italic, "strikethrough": strikethrough, "clickEvent": clickEvent})
 				current = ""
 				try: code = message[i+1]
@@ -175,7 +175,7 @@ class Server:
 					url = False
 					color = "white"
 				it.next()
-		extras.append({"text": current, "color": color, "obfuscated": obfuscated, 
+		extras.append({"text": current, "color": color, "obfuscated": obfuscated,
 			"underlined": underline, "bold": bold, "italic": italic, "strikethrough": strikethrough})
 		return json.dumps({"text": "", "extra": extras})
 	def login(self, username):
@@ -268,7 +268,7 @@ class Server:
 			self.log.info("Starting server...")
 			self.reloadProperties()
 			self.proc = subprocess.Popen(self.args, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-			self.players = {}	
+			self.players = {}
 			while True:
 				time.sleep(0.1)
 				if self.proc.poll() is not None:
@@ -308,12 +308,12 @@ class Server:
 		for i in it:
 			char = text[i]
 			if char == "\xc2":
-				try: 
+				try:
 					it.next()
 					it.next()
 				except:
-					pass 
-			else: 
+					pass
+			else:
 				a += char
 		return a
 	def readConsole(self, buff):
@@ -330,7 +330,7 @@ class Server:
 		else:
 			line = " ".join(buff.split(" ")[3:])
 		print buff
-		deathPrefixes = ["fell", "was", "drowned", "blew", "walked", "went", "burned", "hit", "tried", 
+		deathPrefixes = ["fell", "was", "drowned", "blew", "walked", "went", "burned", "hit", "tried",
 			"died", "got", "starved", "suffocated", "withered"]
 		if not self.config["General"]["pre-1.7-mode"]:
 			if len(args(0)) < 1: return
@@ -428,7 +428,7 @@ class Server:
 		final = ""
 		for i,chunk in enumerate(message.split(" ")):
 			if not i == 0: final += " "
-			try: 
+			try:
 				if chunk[0:7] in ("http://", "https://"): final += "&b&n&@%s&@&r" % chunk
 				else: final += chunk
 			except: final += chunk

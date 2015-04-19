@@ -1,6 +1,6 @@
-# I'll probably split this file into more parts later on, like such: 
+# I'll probably split this file into more parts later on, like such:
 # proxy folder: __init__.py (Proxy), client.py (Client), server.py (Server), network.py (Packet), bot.py (will contain Bot, for bot code)
-# this could definitely use some code-cleaning.  
+# this could definitely use some code-cleaning.
 import socket, threading, struct, StringIO, time, traceback, json, random, hashlib, os, zlib, binascii, uuid, md5, storage, shutil
 from config import Config
 from api.entity import Entity
@@ -23,7 +23,7 @@ class Proxy:
 		self.uuidTranslate = {}
 		self.storage = storage.Storage("proxy-data")
 		self.serverIcon = None
-		
+
 		self.privateKey = encryption.generate_key_pair()
 		self.publicKey = encryption.encode_public_key(self.privateKey)
 	def host(self):
@@ -49,36 +49,36 @@ class Proxy:
 				self.log.debug(traceback.format_exc())
 				self.socket = False
 			time.sleep(5)
-	 	while not self.wrapper.halt:
-	 		try:
-		 		sock, addr = self.socket.accept()
-		 		client = Client(sock, addr, self.wrapper, self.publicKey, self.privateKey, self)
-		 		
-		 		t = threading.Thread(target=client.handle, args=())
-		 		t.daemon = True
-		 		t.start()
+		while not self.wrapper.halt:
+			try:
+				sock, addr = self.socket.accept()
+				client = Client(sock, addr, self.wrapper, self.publicKey, self.privateKey, self)
+
+				t = threading.Thread(target=client.handle, args=())
+				t.daemon = True
+				t.start()
 
 				self.clients.append(client)
 
-		 		# remove stale clients
-		 		for i, client in enumerate(self.wrapper.proxy.clients):
+				# remove stale clients
+				for i, client in enumerate(self.wrapper.proxy.clients):
 					if client.abort:
 						del self.wrapper.proxy.clients[i]
-		 	except:
-		 		print traceback.print_exc()
-		 		try:
-		 			client.disconnect("Some error")
-		 		except:
-		 			pass
+			except:
+				print traceback.print_exc()
+				try:
+					client.disconnect("Some error")
+				except:
+					pass
 	def pollServer(self):
 		sock = socket.socket()
 		sock.connect(("localhost", self.wrapper.config["Proxy"]["server-port"]))
 		packet = Packet(sock, self)
-		
+
 		packet.send(0x00, "varint|string|ushort|varint", (5, "localhost", self.wrapper.config["Proxy"]["server-port"], 1))
 		packet.send(0x00, "", ())
 		packet.flush()
-		
+
 		while True:
 			id, original = packet.grabPacket()
 			if id == 0x00:
@@ -148,7 +148,7 @@ class Proxy:
 		if uuid in self.skinTextures:
 			return self.skinTextures[uuid]
 		skinBlob = json.loads(self.skins[uuid].decode("base64"))
-		if not "SKIN" in skinBlob["textures"]: # Player has no skin, so set to Alex [fix from #160] 
+		if not "SKIN" in skinBlob["textures"]: # Player has no skin, so set to Alex [fix from #160]
 			skinBlob["textures"]["SKIN"] = {"url": "http://hydra-media.cursecdn.com/minecraft.gamepedia.com/f/f2/Alex_skin.png"}
 		r = requests.get(skinBlob["textures"]["SKIN"]["url"])
 		self.skinTextures[uuid] = r.content.encode("base64")
@@ -163,7 +163,7 @@ class Client: # handle client/game connection
 		self.privateKey = privateKey
 		self.proxy = proxy
 		self.addr = addr
-		
+
 		self.abort = False
 		self.log = wrapper.log
 		self.tPing = time.time()
@@ -175,14 +175,14 @@ class Client: # handle client/game connection
 		self.server = None
 		self.address = None
 		self.handshake = False
-		
+
 		self.state = 0 # 0 = init, 1 = motd, 2 = login, 3 = active, 4 = authorizing
-		
+
 		self.packet = Packet(self.socket, self)
 		self.send = self.packet.send
 		self.read = self.packet.read
 		self.sendRaw = self.packet.sendRaw
-		
+
 		self.username = None
 		self.gamemode = 0
 		self.dimension = 0
@@ -205,7 +205,7 @@ class Client: # handle client/game connection
 				self.server = self.server_temp
 			except:
 				self.server_temp.close(kill_client=False)
-				self.server_temp = None	
+				self.server_temp = None
 				self.send(0x02, "string|byte", ("{text:'Could not connect to that server!', color:red, bold:true}", 0))
 				self.address = None
 				return
@@ -218,7 +218,7 @@ class Client: # handle client/game connection
 		t = threading.Thread(target=self.server.handle, args=())
 		t.daemon = True
 		t.start()
-		
+
 		for xi in range(32):
 			xi = xi - 8
 			for zi in range(32):
@@ -226,7 +226,7 @@ class Client: # handle client/game connection
 				x, z = (self.position[0] / 16) + xi, (self.position[2] / 16) + zi
 				#print "Sending lel chunk %d, %d" % (x, z)
 				#self.send(0x21, "int|int|bool|ushort|varint", (x, z, True, 0, 0))
-		
+
 		if self.config["Proxy"]["spigot-mode"]:
 			payload = "localhost\x00%s\x00%s" % (self.addr[0], self.uuid.hex)
 			self.server.send(0x00, "varint|string|ushort|varint", (self.version, payload, self.config["Proxy"]["server-port"], 2))
@@ -248,7 +248,7 @@ class Client: # handle client/game connection
 			if client.username == self.username:
 				del self.wrapper.proxy.clients[i]
 	def disconnect(self, message):
-		try: 
+		try:
 			message = json.loads(message["string"])
 		except: pass
 		if self.state == 3:
@@ -310,7 +310,7 @@ class Client: # handle client/game connection
 					player = self.wrapper.server.players[i]
 					sample.append({"name": player.username, "id": str(player.uuid)})
 					if len(sample) > 5: break
-				MOTD = {"description": json.loads(self.wrapper.server.processColorCodes(self.wrapper.server.motd.replace("\\", ""))), 
+				MOTD = {"description": json.loads(self.wrapper.server.processColorCodes(self.wrapper.server.motd.replace("\\", ""))),
 					"players": {"max": self.wrapper.server.maxPlayers, "online": len(self.wrapper.server.players), "sample": sample},
 					"version": {"name": self.wrapper.server.version, "protocol": self.wrapper.server.protocolVersion}
 				}
@@ -322,7 +322,7 @@ class Client: # handle client/game connection
 			elif self.state == 2:
 				data = self.read("string:username")
 				self.username = data["username"]
-				
+
 				if self.config["Proxy"]["online-mode"]:
 					self.state = 4
 					self.verifyToken = encryption.generate_challenge_token()
@@ -352,7 +352,7 @@ class Client: # handle client/game connection
 						self.address = None
 						self.connect()
 						self.isLocal = True
-						return False 
+						return False
 					if not self.isLocal == True: return True
 					payload = self.wrapper.callEvent("player.rawMessage", {"player": self.getPlayerObject(), "message": data["message"]})
 					if not payload: return False
@@ -388,7 +388,7 @@ class Client: # handle client/game connection
 
 				self.packet.sendCipher = encryption.AES128CFB8(sharedSecret)
 				self.packet.recvCipher = encryption.AES128CFB8(sharedSecret)
-				
+
 				if not verifyToken == self.verifyToken:
 					self.disconnect("Verify tokens are not the same")
 					return False
@@ -399,7 +399,7 @@ class Client: # handle client/game connection
 						self.uuid = data["id"]
 						self.uuid = "%s-%s-%s-%s-%s" % (self.uuid[:8], self.uuid[8:12], self.uuid[12:16], self.uuid[16:20], self.uuid[20:])
 						self.uuid = uuid.UUID(self.uuid)
-						
+
 						if data["name"] != self.username:
 							self.disconnect("Client's username did not match Mojang's record")
 							return False
@@ -413,7 +413,7 @@ class Client: # handle client/game connection
 						return False
 					if self.proxy.lookupUUID(self.uuid):
 						newUsername = self.proxy.lookupUUID(self.uuid)["name"]
-						if newUsername != self.username: 
+						if newUsername != self.username:
 							self.log.info("%s logged in with older name previously, falling back to %s" % (self.username, newUsername))
 							self.username = newUsername
 				else:
@@ -452,12 +452,12 @@ class Client: # handle client/game connection
 									self.wrapper.server.console("whitelist reload")
 									with open("%s/.wrapper-proxy-whitelist-migrate" % worldName, "a") as f:
 										f.write("%s %s\n" % (str(self.uuid), str(self.serverUUID)))
-					
+
 				self.serverUUID = self.UUIDFromName("OfflinePlayer:" + self.username)
-				
+
 				if self.version > 26:
 					self.packet.setCompression(256)
-					
+
 				# Ban code should go here
 
 				if not self.wrapper.callEvent("player.preLogin", {"player": self.username, "online_uuid": self.uuid, "offline_uuid": self.serverUUID, "ip": self.addr[0]}):
@@ -466,12 +466,12 @@ class Client: # handle client/game connection
 
 				self.send(0x02, "string|string", (str(self.uuid), self.username))
 				self.state = 3
-				
+
 				self.connect()
-				
+
 				self.log.info("%s logged in (UUID: %s | IP: %s)" % (self.username, self.uuid, self.addr[0]))
 				self.proxy.setUUID(self.uuid, self.username)
-				
+
 				return False
 			elif self.state == 5: # ping packet during status request
 				keepAlive = self.read("long:keepAlive")["keepAlive"]
@@ -492,7 +492,7 @@ class Client: # handle client/game connection
 			else:
 				data = self.read("byte:status|position:position|byte:face")
 				position = data["position"]
-			if data is None: return False 
+			if data is None: return False
 			if data["status"] == 2:
 				if not self.wrapper.callEvent("player.dig", {"player": self.getPlayerObject(), "position": position, "action": "end_break", "face": data["face"]}): return False
 			if data["status"] == 0:
@@ -575,7 +575,7 @@ class Server: # Handle Server Connection
 		self.isServer = True
 		self.proxy = wrapper.proxy
 		self.lastPacketIDs = []
-		
+
 		self.state = 0 # 0 = init, 1 = motd, 2 = login, 3 = active, 4 = authorizing
 		self.packet = None
 		self.version = self.wrapper.server.protocolVersion
@@ -589,15 +589,15 @@ class Server: # Handle Server Connection
 		else:
 			self.socket.connect((self.ip, self.port))
 			self.client.isLocal = False
-		
+
 		self.packet = Packet(self.socket, self)
 		self.packet.version = self.client.version
 		self.username = self.client.username
-		
+
 		self.send = self.packet.send
 		self.read = self.packet.read
 		self.sendRaw = self.packet.sendRaw
-		
+
 		t = threading.Thread(target=self.flush, args=())
 		t.daemon = True
 		t.start()
@@ -617,7 +617,7 @@ class Server: # Handle Server Connection
 			self.client.send(0x2b, "ubyte|float", (1, 0))
 			self.client.connect()
 			return
-		
+
 		# I may remove this later so the client can remain connected upon server disconnection
 #		self.client.send(0x02, "string|byte", (json.dumps({"text": "Disconnected from server. Reason: %s" % reason, "color": "red"}),0))
 #		self.abort = True
@@ -664,7 +664,7 @@ class Server: # Handle Server Connection
 				data = self.read("int:eid|ubyte:gamemode|byte:dimension|ubyte:difficulty|ubyte:max_players|string:level_type")
 				self.client.gamemode = data["gamemode"]
 				self.client.dimension = data["dimension"]
-				self.eid = data["eid"]  # This is the EID of the player on this particular server - not always the EID that the client is aware of 
+				self.eid = data["eid"]  # This is the EID of the player on this particular server - not always the EID that the client is aware of
 				if self.client.handshake:
 					print "self.client.handshake"
 					self.client.send(0x07, "int|ubyte|ubyte|string", (self.client.dimension, data["difficulty"], data["gamemode"], data["level_type"]))
@@ -688,11 +688,11 @@ class Server: # Handle Server Connection
 					data = json.loads(self.read("string:json")["json"])
 				except: return
 				if not self.wrapper.callEvent("player.chatbox", {"player": self.client.getPlayerObject(), "json": data}): return False
-				try: 
+				try:
 					if data["translate"] == "chat.type.admin": return False
 				except: pass
 		if id == 0x03:
-			if self.state == 2: # Set Compression 
+			if self.state == 2: # Set Compression
 				data = self.read("varint:threshold")
 				if not data["threshold"] == -1:
 					self.packet.compression = True
@@ -914,16 +914,16 @@ class Server: # Handle Server Connection
 class Packet: # PACKET PARSING CODE
 	def __init__(self, socket, obj):
 		self.socket = socket
-		
+
 		self.obj = obj
-		
+
 		self.recvCipher = None
 		self.sendCipher = None
 		self.compressThreshold = -1
 		self.version = 5
 		self.bonk = False
 		self.abort = False
-		
+
 		self.buffer = StringIO.StringIO()
 		self.queue = []
 	def close(self):
@@ -1094,7 +1094,7 @@ class Packet: # PACKET PARSING CODE
 			if type == 2: b += self.send_int(value)
 			if type == 3: b += self.send_float(value)
 			if type == 4: b += self.send_string(value)
-			if type == 5: 
+			if type == 5:
 				print "WIP 5"
 			if type == 6:
 				print "WIP 6"
@@ -1208,18 +1208,18 @@ class Packet: # PACKET PARSING CODE
 			type = a >> 5
 			if type == 0:
 				data[index] = (0, self.read_byte())
-			if type == 1: 
+			if type == 1:
 				data[index] = (1, self.read_short())
-			if type == 2: 
+			if type == 2:
 				data[index] = (2, self.read_int())
-			if type == 3: 
+			if type == 3:
 				data[index] = (3, self.read_float())
-			if type == 4: 
+			if type == 4:
 				data[index] = (4, self.read_string())
-			if type == 5: 
+			if type == 5:
 				data[index] = (5, self.read_slot())
-			if type == 6: 
+			if type == 6:
 				data[index] = (6, (self.read_int(), self.read_int(), self.read_int()))
-			#if type == 7: 
+			#if type == 7:
 			#	data[index] = ("float", (self.read_int(), self.read_int(), self.read_int()))
 		return data
